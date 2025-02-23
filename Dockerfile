@@ -1,24 +1,26 @@
-# Usa una imagen base compatible con apt-get
+# Usa una imagen base de Debian con soporte para apt-get
 FROM python:3.10-slim-bullseye
 
-# Instala dependencias del sistema necesarias para Selenium y Chrome
+# Instala dependencias necesarias para Chrome y Selenium
 RUN apt-get update && apt-get install -y \
     wget unzip curl \
-    xvfb libxi6 libgconf-2-4 \
-    libnss3 libxss1 libappindicator1 \
-    fonts-liberation libatk-bridge2.0-0 libgtk-3-0 \
+    ca-certificates fonts-liberation \
+    libasound2 libgbm1 libgtk-3-0 libnss3 libxss1 libxtst6 \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# Descarga e instala Google Chrome
+# Descarga e instala Google Chrome manualmente
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install
+
+# Verifica que Chrome está en la ruta correcta
+RUN ln -sf /usr/bin/google-chrome-stable /usr/bin/google-chrome
 
 # Instala ChromeDriver
 RUN CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
     wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" && \
     unzip chromedriver_linux64.zip && mv chromedriver /usr/local/bin/
 
-# Crea un directorio de trabajo
+# Configura el directorio de trabajo
 WORKDIR /app
 
 # Copia los archivos del proyecto
