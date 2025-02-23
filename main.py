@@ -1,37 +1,23 @@
-from fastapi import FastAPI, BackgroundTasks, HTTPException
-from pydantic import BaseModel
-from extract import *
-import os
+from fastapi import FastAPI
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
-
-SECRET = os.getenv("SECRET")
-
-#
 app = FastAPI()
 
-class Msg(BaseModel):
-    msg: str
-    secret: str
-
 @app.get("/")
+def read_root():
+    return {"message": "FastAPI con Selenium en Railway"}
 
-async def root():
-    return {"message": "Hello World. Welcome to FastAPI!"}
+@app.get("/scrape")
+def scrape_website(url: str = "https://www.google.com"):
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")  # Modo sin interfaz gráfica
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
 
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    driver.get(url)
+    title = driver.title
+    driver.quit()
 
-@app.get("/homepage")
-async def demo_get():
-    driver=createDriver()
-
-    homepage = getGoogleHomepage(driver)
-    driver.close()
-    return homepage
-
-@app.post("/backgroundDemo")
-async def demo_post(inp: Msg, background_tasks: BackgroundTasks):
-    
-    background_tasks.add_task(doBackgroundTask, inp)
-    return {"message": "Success, background task started"}
-    
-
-
+    return {"url": url, "title": title}
