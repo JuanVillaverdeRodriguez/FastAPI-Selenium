@@ -1,5 +1,5 @@
-# Usa una imagen base de Python
-FROM python:3.10
+# Usa una imagen base que soporte apt-get
+FROM python:3.10-slim
 
 # Instala dependencias del sistema necesarias para Selenium y Chrome
 RUN apt-get update && apt-get install -y \
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation libatk-bridge2.0-0 libgtk-3-0 \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# Instala Google Chrome
+# Descarga e instala Google Chrome
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install
 
