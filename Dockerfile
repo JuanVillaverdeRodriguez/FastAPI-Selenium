@@ -1,11 +1,11 @@
-# Usa una imagen base que soporte apt-get
-FROM python:3.10-slim
+# Usa una imagen base compatible con apt-get
+FROM python:3.10-slim-bullseye
 
 # Instala dependencias del sistema necesarias para Selenium y Chrome
 RUN apt-get update && apt-get install -y \
     wget unzip curl \
     xvfb libxi6 libgconf-2-4 \
-    libnss3 libxss1 libappindicator1 libindicator7 \
+    libnss3 libxss1 libappindicator1 \
     fonts-liberation libatk-bridge2.0-0 libgtk-3-0 \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
