@@ -3,7 +3,14 @@ ARG PORT=443
 FROM cypress/browsers:latest
 
 # Instalar Python y dependencias necesarias
-RUN apt-get update && apt-get install -y python3 python3-venv python3-pip
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3 \
+    python3-dev \
+    python3-pip \
+    libffi-dev \
+    gcc \
+    g++
 
 # Crear un entorno virtual para evitar problemas con el entorno administrado
 RUN python3 -m venv /venv
